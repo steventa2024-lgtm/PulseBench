@@ -107,12 +107,17 @@ async fn rpc_surface_is_safe_and_complete() {
     // `save_png` only writes real PNG data to .png files.
     let p = dir.path().join("x.png");
     assert!(rpc::dispatch(&app, "save_png", json!({"path": p, "base64": "aGVsbG8="})).await.unwrap_err().contains("PNG"));
-    assert!(rpc::dispatch(&app, "save_png", json!({"path": dir.path().join("x.exe"), "base64": "iVBORw=="})).await.unwrap_err().contains(".png"));
+    assert!(rpc::dispatch(&app, "save_png", json!({"path": dir.path().join("x.exe"), "base64": "iVBORw=="}))
+        .await
+        .unwrap_err()
+        .contains(".png"));
     assert!(!p.exists());
     // Starting a run with no models or an unknown suite is a clear error, never a crash.
     let err = rpc::dispatch(&app, "start_run", json!({"request": {"suiteId": "quick", "models": []}})).await.unwrap_err();
     assert!(err.contains("at least one model"), "{err}");
-    let err = rpc::dispatch(&app, "start_run", json!({"request": {"suiteId": "nope", "models": [{"providerId":"ollama","modelId":"x"}]}})).await.unwrap_err();
+    let err = rpc::dispatch(&app, "start_run", json!({"request": {"suiteId": "nope", "models": [{"providerId":"ollama","modelId":"x"}]}}))
+        .await
+        .unwrap_err();
     assert!(err.contains("not found"), "{err}");
     assert_eq!(app.list_runs(10).unwrap().len(), 0);
     // Every advertised command is routed.
