@@ -153,6 +153,7 @@ mod tests {
         assert!(!keys.contains(&"AWS_SECRET_ACCESS_KEY"));
         assert!(!keys.contains(&"GITHUB_TOKEN"));
         let home = env.iter().find(|(k, _)| k == "HOME").unwrap();
-        assert_eq!(home.1, "/tmp/ws/.pb-home", "HOME must point inside the workspace");
+        let expected = Path::new("/tmp/ws").join(".pb-home").to_string_lossy().into_owned(); // separator differs per OS
+        assert_eq!(home.1, expected, "HOME must point inside the workspace");
     }
 }

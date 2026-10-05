@@ -34,7 +34,7 @@ jobs:
       - name: Clippy
         run: cargo clippy --workspace --all-targets --exclude pulsebench-desktop -- -D warnings
       - name: Tests (includes validation of every official benchmark task)
-        run: cargo test --workspace --exclude pulsebench-desktop
+        run: cargo test --workspace --exclude pulsebench-desktop --no-fail-fast
 
   generated:
     name: Generated files are up to date
