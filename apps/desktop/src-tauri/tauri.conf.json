@@ -27,8 +27,8 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "publisher": "ZeroPulse",
-    "copyright": "© ZeroPulse. MIT licensed.",
+    "publisher": "ZeroPulse AI",
+    "copyright": "© 2026 ZeroPulse AI. MIT licensed.",
     "category": "DeveloperTool",
     "shortDescription": "Local-first AI coding model benchmarks",
     "longDescription": "PulseBench runs local AI coding models against real software-engineering tasks, executes their solutions, verifies them with tests and produces reproducible scores on your hardware.",

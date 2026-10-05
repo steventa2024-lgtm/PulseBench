@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Please **do not** open a public issue for security problems. Email **security@zeropulse.dev** (or use GitHub's private vulnerability reporting on this repository) with a description, reproduction steps and the affected version. We aim to acknowledge reports within 3 working days and to publish a fix or mitigation within 30 days.
+Please **do not** open a public issue for security problems. Use GitHub's [private vulnerability reporting](https://github.com/steventa2024-lgtm/PulseBench/security/advisories/new) on this repository with a description, reproduction steps and the affected version. We aim to acknowledge reports within 3 working days and to publish a fix or mitigation within 30 days.
 
 ## Scope
 

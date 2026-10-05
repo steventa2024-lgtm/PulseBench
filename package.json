@@ -18,5 +18,10 @@
     "desktop:dev": "npm run tauri -w apps/desktop -- dev",
     "desktop:build": "npm run tauri -w apps/desktop -- build",
     "e2e": "npm run e2e -w apps/desktop"
+  },
+  "author": "ZeroPulse AI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steventa2024-lgtm/PulseBench.git"
   }
 }

@@ -80,7 +80,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <main className="min-w-0 flex-1 overflow-y-auto bg-ink p-5">{children}</main>
       </div>
       <footer className="flex h-7 shrink-0 items-center justify-between border-t border-line bg-panel px-4 text-[11px] text-dim">
-        <span>Built by ZeroPulse</span>
+        <span>Built by ZeroPulse AI</span>
         <span>Local-first · no telemetry · your code never leaves this machine</span>
       </footer>
     </div>

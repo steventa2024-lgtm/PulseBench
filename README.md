@@ -51,7 +51,7 @@ The first TypeScript/React run downloads a pinned toolchain (~50 MB, once).
 **From source:**
 
 ```bash
-git clone https://github.com/zeropulse/pulsebench && cd pulsebench
+git clone https://github.com/steventa2024-lgtm/PulseBench && cd PulseBench
 npm ci
 npm run desktop:dev          # desktop app with hot reload (needs the Tauri prerequisites)
 cargo run -p pulsebench-cli -- models
@@ -176,4 +176,4 @@ repository-specific and agent benchmarks. Details: [docs/roadmap.md](docs/roadma
 
 ---
 
-Built by [ZeroPulse](https://zeropulse.dev) · MIT licensed.
+Built by ZeroPulse AI · MIT licensed · see [AUTHORS.md](AUTHORS.md).

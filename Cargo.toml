@@ -9,8 +9,8 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT"
 rust-version = "1.80"
-authors = ["ZeroPulse"]
-repository = "https://github.com/zeropulse/pulsebench"
+authors = ["ZeroPulse AI"]
+repository = "https://github.com/steventa2024-lgtm/PulseBench"
 
 [profile.release]
 lto = "thin"
