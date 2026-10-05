@@ -1,0 +1,14 @@
+{
+  "id": "ts-sec-143",
+  "title": "Stop leaking secrets in logs",
+  "category": "security",
+  "language": "typescript",
+  "difficulty": "hard",
+  "description": "`src/redact.ts` is used to sanitize objects and URLs before they are written to logs, but it leaks secrets: it only masks a top-level key named exactly `password`, ignores nested data, mutates its input and does not touch URLs or strings containing credentials. Rewrite it so it follows the rules in the doc comments and `test/redact.test.ts` passes. It must never throw, never mutate its input and never leak a secret value.",
+  "entryFiles": ["src/redact.ts"],
+  "contextFiles": ["test/redact.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

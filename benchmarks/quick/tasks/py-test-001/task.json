@@ -1,0 +1,25 @@
+{
+  "id": "py-test-001",
+  "title": "Write unit tests for slugify",
+  "category": "testing",
+  "language": "python",
+  "difficulty": "medium",
+  "description": "`slugify.py` is correct, but it has no tests. Write a thorough unittest suite in `test_slugify.py` (create the file). Your tests will be run against the correct implementation (they must all pass) and then against several subtly broken versions of `slugify` (they must detect every one of them). Cover every documented behaviour and its edge cases. Write at least 6 tests.",
+  "entryFiles": ["slugify.py"],
+  "editableFiles": ["test_slugify.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 1,
+  "verification": {
+    "kind": "mutation",
+    "minTests": 6,
+    "mutants": [
+      { "id": "m1", "description": "does not lowercase the text", "overlay": { "slugify.py": "mutants/m1/slugify.py" } },
+      { "id": "m2", "description": "does not strip accents (café becomes caf)", "overlay": { "slugify.py": "mutants/m2/slugify.py" } },
+      { "id": "m3", "description": "ignores max_length", "overlay": { "slugify.py": "mutants/m3/slugify.py" } },
+      { "id": "m4", "description": "leaves a trailing separator after truncation", "overlay": { "slugify.py": "mutants/m4/slugify.py" } },
+      { "id": "m5", "description": "ignores the separator argument", "overlay": { "slugify.py": "mutants/m5/slugify.py" } },
+      { "id": "m6", "description": "accepts None instead of raising TypeError", "overlay": { "slugify.py": "mutants/m6/slugify.py" } }
+    ]
+  }
+}

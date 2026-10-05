@@ -1,0 +1,94 @@
+{
+  "$defs": {
+    "NodeToolchain": {
+      "properties": {
+        "packages": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Exact-pinned npm packages installed once into a shared, read-only toolchain cache.",
+          "type": "object"
+        }
+      },
+      "required": [
+        "packages"
+      ],
+      "type": "object"
+    },
+    "ToolchainSpec": {
+      "properties": {
+        "node": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NodeToolchain"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "type": "object"
+    }
+  },
+  "$id": "https://pulsebench.dev/schema/pulsebench-suite-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "`suite.json`",
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "estimatedMinutes": {
+      "default": null,
+      "description": "Rough wall-clock estimate shown in the UI.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "official": {
+      "default": false,
+      "type": "boolean"
+    },
+    "schemaVersion": {
+      "format": "uint32",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "tasks": {
+      "description": "Task directory names under `tasks/`, in execution order.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "toolchain": {
+      "$ref": "#/$defs/ToolchainSpec",
+      "default": {
+        "node": null
+      }
+    },
+    "version": {
+      "description": "Bump whenever any task, fixture, test or scoring-relevant file changes.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "version",
+    "description",
+    "tasks"
+  ],
+  "title": "PulseBench suite manifest (suite.json)",
+  "type": "object"
+}

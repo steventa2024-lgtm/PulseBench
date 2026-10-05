@@ -1,0 +1,26 @@
+{
+  "id": "ts-test-133",
+  "title": "Repair a broken test suite",
+  "category": "testing",
+  "language": "typescript",
+  "difficulty": "medium",
+  "description": "`src/minStack.ts` is correct (read its doc comment), but `test/minStack.test.ts` is broken: it does not compile and several assertions contradict the documented behaviour. Repair the test file so that it compiles under `strict`, passes against the correct implementation, and still genuinely tests it: it will also be run against several subtly broken versions of `MinStack`, all of which it must detect. Keep (and where useful add to) the coverage; do not just delete assertions. At least 6 tests are required. Do not edit the implementation.",
+  "entryFiles": ["src/minStack.ts", "test/minStack.test.ts"],
+  "editableFiles": ["test/minStack.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2,
+  "verification": {
+    "kind": "mutation",
+    "minTests": 6,
+    "mutants": [
+      { "id": "m1", "description": "min() is stale after pop (the min stack is never popped)", "overlay": { "src/minStack.ts": "mutants/m1/minStack.ts" } },
+      { "id": "m2", "description": "pop() on an empty stack throws", "overlay": { "src/minStack.ts": "mutants/m2/minStack.ts" } },
+      { "id": "m3", "description": "peek() removes the element", "overlay": { "src/minStack.ts": "mutants/m3/minStack.ts" } },
+      { "id": "m4", "description": "duplicate minimums are lost (push uses < instead of <=)", "overlay": { "src/minStack.ts": "mutants/m4/minStack.ts" } },
+      { "id": "m5", "description": "clear() does not reset the minimums", "overlay": { "src/minStack.ts": "mutants/m5/minStack.ts" } },
+      { "id": "m6", "description": "the custom comparator is ignored", "overlay": { "src/minStack.ts": "mutants/m6/minStack.ts" } }
+    ]
+  }
+}

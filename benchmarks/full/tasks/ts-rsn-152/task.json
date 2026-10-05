@@ -1,0 +1,14 @@
+{
+  "id": "ts-rsn-152",
+  "title": "Trace a data-flow bug through the analytics pipeline",
+  "category": "reasoning",
+  "language": "typescript",
+  "difficulty": "hard",
+  "description": "An analytics pipeline parses log lines (`src/parse.ts`), groups events per user (`src/aggregate.ts`) and builds reports (`src/report.ts`). `test/pipeline.test.ts` fails: sessions come out in the wrong order after `topUsers` has been called, the input array is modified, and session boundaries are off. Trace how the event arrays flow between the three modules, find every root cause (it is not only in the function that fails) and fix it in the right place. The exported function signatures and return shapes must not change.",
+  "entryFiles": ["src/parse.ts", "src/aggregate.ts", "src/report.ts"],
+  "contextFiles": ["test/pipeline.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

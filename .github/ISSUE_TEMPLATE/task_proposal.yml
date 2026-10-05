@@ -1,0 +1,32 @@
+name: Benchmark task proposal
+description: Propose a task for a PulseBench suite
+labels: [benchmark-task]
+body:
+  - type: input
+    id: title
+    attributes: { label: Task title }
+    validations: { required: true }
+  - type: dropdown
+    id: category
+    attributes: { label: Category, options: [bugfix, implementation, refactoring, testing, security, reasoning] }
+    validations: { required: true }
+  - type: dropdown
+    id: language
+    attributes: { label: Language, options: [python, javascript, typescript, react, other (explain)] }
+    validations: { required: true }
+  - type: textarea
+    id: why
+    attributes: { label: What does it measure?, description: Why is it a fair, realistic requirement? }
+    validations: { required: true }
+  - type: textarea
+    id: verify
+    attributes: { label: How is it verified?, description: "Tests / mutants. Confirm the fixture fails and a reference solution passes (`pulsebench suite validate`)." }
+    validations: { required: true }
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: Deterministic, offline, runs well inside its timeout
+        - label: The prompt does not leak the solution
+        - label: I can contribute the fixture, tests and reference solution

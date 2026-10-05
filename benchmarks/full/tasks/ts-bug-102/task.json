@@ -1,0 +1,14 @@
+{
+  "id": "ts-bug-102",
+  "title": "Repair the async retry and concurrency helpers",
+  "category": "bugfix",
+  "language": "typescript",
+  "difficulty": "medium",
+  "description": "`src/async.ts` contains `retry` and `mapLimit`. Both misbehave: errors from the async function escape the retry loop, the number of attempts is wrong, there is no delay between attempts, and `mapLimit` starts every task at once instead of respecting the concurrency limit. Fix them so `test/async.test.ts` passes. Keep the signatures.",
+  "entryFiles": ["src/async.ts"],
+  "contextFiles": ["test/async.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "quick",
+  "name": "Quick Coding",
+  "version": "1.0.0",
+  "description": "Five small, fast coding tasks across Python, JavaScript, TypeScript and React: a bug fix, a type error, a utility implementation, a component repair and a test-writing task.",
+  "official": true,
+  "estimatedMinutes": "5-15",
+  "tasks": ["py-bug-001", "ts-type-001", "js-impl-001", "react-bug-001", "py-test-001"],
+  "toolchain": {
+    "node": {
+      "packages": {
+        "@types/jsdom": "21.1.7",
+        "@types/node": "22.20.5",
+        "@types/react": "19.2.18",
+        "@types/react-dom": "19.2.7",
+        "jsdom": "26.1.0",
+        "react": "19.2.8",
+        "react-dom": "19.2.8",
+        "typescript": "5.9.3"
+      }
+    }
+  }
+}

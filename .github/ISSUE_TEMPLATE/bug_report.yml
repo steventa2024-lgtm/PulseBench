@@ -1,0 +1,29 @@
+name: Bug report
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: What happened?, description: What did you expect instead? }
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes: { label: Steps to reproduce }
+    validations: { required: true }
+  - type: input
+    id: version
+    attributes: { label: PulseBench version, placeholder: "0.1.0 (Settings → Data)" }
+    validations: { required: true }
+  - type: dropdown
+    id: os
+    attributes: { label: OS, options: [Windows 11, Windows 10, macOS, Linux, Other] }
+    validations: { required: true }
+  - type: input
+    id: hardware
+    attributes: { label: GPU / VRAM / RAM }
+  - type: input
+    id: provider
+    attributes: { label: Provider and model, placeholder: "Ollama 0.12 · qwen2.5-coder:7b" }
+  - type: textarea
+    id: logs
+    attributes: { label: Run log or exported result, description: "Attach the exported JSON if relevant (it contains prompts and model output, no credentials). Remove anything private." , render: text }

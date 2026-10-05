@@ -1,0 +1,14 @@
+{
+  "id": "ts-impl-113",
+  "title": "Implement a typed state store",
+  "category": "implementation",
+  "language": "typescript",
+  "difficulty": "hard",
+  "description": "Implement `createStore` in `src/store.ts` (a minimal Redux-style store) following the doc comment. It must be fully type-safe under `strict`: `test/store.test.ts` contains `// @ts-expect-error` lines that only compile cleanly if your types reject wrong actions and wrong selectors, so avoid `any`.",
+  "entryFiles": ["src/store.ts"],
+  "contextFiles": ["test/store.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

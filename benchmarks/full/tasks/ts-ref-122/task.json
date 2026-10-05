@@ -1,0 +1,14 @@
+{
+  "id": "ts-ref-122",
+  "title": "Make the event emitter type-safe",
+  "category": "refactoring",
+  "language": "typescript",
+  "difficulty": "hard",
+  "description": "`src/emitter.ts` is an untyped event emitter full of `any` and `string`. Refactor it into a generic `Emitter<Events>` where `Events` maps event names to payload types, so that event names and payloads are checked at compile time (an event whose payload type is `undefined` is emitted without an argument). Runtime behaviour must stay the same. `test/emitter.test.ts` contains `// @ts-expect-error` lines that only pass if your types are strict enough; do not use `any`.",
+  "entryFiles": ["src/emitter.ts"],
+  "contextFiles": ["test/emitter.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

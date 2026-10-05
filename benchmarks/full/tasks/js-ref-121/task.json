@@ -1,0 +1,13 @@
+{
+  "id": "js-ref-121",
+  "title": "Migrate callback code to async/await",
+  "category": "refactoring",
+  "language": "javascript",
+  "difficulty": "medium",
+  "description": "`src/profile.js` loads a user profile with deeply nested Node-style callbacks. Refactor `loadProfile` to `async function loadProfile(db, id)` that returns a Promise resolving to the same result shape and rejecting with the same errors. The `db` object stays callback-based (its methods take a Node-style callback), so you must wrap it yourself. Comment counts for the posts must be fetched concurrently, not one after another. `test/profile.test.js` describes the required behaviour.",
+  "entryFiles": ["src/profile.js"],
+  "contextFiles": ["test/profile.test.js"],
+  "testCommand": "node --test",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}

@@ -1,0 +1,205 @@
+{
+  "$defs": {
+    "Category": {
+      "enum": [
+        "bugfix",
+        "implementation",
+        "refactoring",
+        "testing",
+        "security",
+        "reasoning"
+      ],
+      "type": "string"
+    },
+    "Difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "type": "string"
+    },
+    "Language": {
+      "oneOf": [
+        {
+          "enum": [
+            "python",
+            "javascript",
+            "typescript"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "react",
+          "description": "TypeScript + JSX (React function components).",
+          "type": "string"
+        }
+      ]
+    },
+    "Mutant": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "overlay": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "workspace-relative target path -> path (relative to the task directory) of the mutated file.",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "overlay"
+      ],
+      "type": "object"
+    },
+    "Verification": {
+      "description": "Extra verification applied after the normal test command passes.",
+      "oneOf": [
+        {
+          "description": "The task's test command must exit 0 and report at least one test.",
+          "properties": {
+            "kind": {
+              "const": "tests",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "description": "For \"write tests\" tasks: the model's tests must pass on the correct\nimplementation and must fail on every mutant (a broken implementation).",
+          "properties": {
+            "kind": {
+              "const": "mutation",
+              "type": "string"
+            },
+            "minTests": {
+              "default": 0,
+              "description": "Minimum number of tests the model's suite must contain.",
+              "format": "uint32",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "mutants": {
+              "items": {
+                "$ref": "#/$defs/Mutant"
+              },
+              "type": "array"
+            }
+          },
+          "required": [
+            "kind",
+            "mutants"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "$id": "https://pulsebench.dev/schema/pulsebench-task-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "One benchmark task (`tasks/<id>/task.json`).",
+  "properties": {
+    "category": {
+      "$ref": "#/$defs/Category"
+    },
+    "compileCommand": {
+      "default": null,
+      "description": "Trusted compile/type-check command. Never supplied by the model.",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "contextFiles": {
+      "default": [],
+      "description": "Read-only files shown to the model as context (for example the tests).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "description": {
+      "type": "string"
+    },
+    "difficulty": {
+      "$ref": "#/$defs/Difficulty"
+    },
+    "editableFiles": {
+      "default": null,
+      "description": "Files the model may create or overwrite. Defaults to `entryFiles`.",
+      "items": {
+        "type": "string"
+      },
+      "type": [
+        "array",
+        "null"
+      ]
+    },
+    "entryFiles": {
+      "description": "Files shown to the model. Also editable unless `editableFiles` is set.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "id": {
+      "type": "string"
+    },
+    "language": {
+      "$ref": "#/$defs/Language"
+    },
+    "maxAttempts": {
+      "default": 1,
+      "format": "uint32",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "testCommand": {
+      "description": "Trusted test command. Never supplied by the model.",
+      "type": "string"
+    },
+    "timeoutSeconds": {
+      "default": 120,
+      "format": "uint32",
+      "minimum": 0,
+      "type": "integer"
+    },
+    "title": {
+      "type": "string"
+    },
+    "verification": {
+      "$ref": "#/$defs/Verification",
+      "default": {
+        "kind": "tests"
+      }
+    },
+    "workspace": {
+      "default": "workspace",
+      "description": "Fixture directory, relative to the task directory.",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "category",
+    "language",
+    "difficulty",
+    "description",
+    "entryFiles",
+    "testCommand"
+  ],
+  "title": "PulseBench task definition (task.json)",
+  "type": "object"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "react-rsn-153",
+  "title": "Diagnose the misbehaving stopwatch",
+  "category": "reasoning",
+  "language": "react",
+  "difficulty": "hard",
+  "description": "The `Stopwatch` component (`src/Stopwatch.tsx`) uses a custom `useInterval` hook (`src/useInterval.ts`). In `test/stopwatch.test.tsx` the time jumps by the wrong amount, keeps running after Stop or unmount, and re-renders disturb the timer. Work out the root causes across the hook and the component (think about closures, effect dependencies and cleanup) and fix them so the tests pass. Keep the exports and props; `useInterval(callback, delayMs | null)` must always call the *latest* callback, run exactly one interval while `delayMs` is a number, and none when it is null.",
+  "entryFiles": ["src/useInterval.ts", "src/Stopwatch.tsx"],
+  "contextFiles": ["test/stopwatch.test.tsx", "test/helpers.tsx"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

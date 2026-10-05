@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "id": "full",
+  "name": "Full Coding",
+  "version": "1.0.0",
+  "description": "Twenty tasks across bug fixing, implementation, refactoring, testing, security and multi-file reasoning in Python, JavaScript, TypeScript and React. Slower and stricter than Quick: tasks allow repair attempts and several are hard.",
+  "official": true,
+  "estimatedMinutes": "30-90",
+  "tasks": [
+    "py-bug-101",
+    "ts-bug-102",
+    "ts-bug-103",
+    "js-bug-104",
+    "py-impl-111",
+    "js-impl-112",
+    "ts-impl-113",
+    "react-impl-114",
+    "js-ref-121",
+    "ts-ref-122",
+    "py-ref-123",
+    "py-test-131",
+    "js-test-132",
+    "ts-test-133",
+    "py-sec-141",
+    "js-sec-142",
+    "ts-sec-143",
+    "py-rsn-151",
+    "ts-rsn-152",
+    "react-rsn-153"
+  ],
+  "toolchain": {
+    "node": {
+      "packages": {
+        "@types/jsdom": "21.1.7",
+        "@types/node": "22.20.5",
+        "@types/react": "19.2.18",
+        "@types/react-dom": "19.2.7",
+        "jsdom": "26.1.0",
+        "react": "19.2.8",
+        "react-dom": "19.2.8",
+        "typescript": "5.9.3"
+      }
+    }
+  }
+}

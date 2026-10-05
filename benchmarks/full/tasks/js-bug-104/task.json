@@ -1,0 +1,13 @@
+{
+  "id": "js-bug-104",
+  "title": "Repair the API payload validation",
+  "category": "bugfix",
+  "language": "javascript",
+  "difficulty": "medium",
+  "description": "`src/validate.js` validates the JSON body of a `POST /users` endpoint, but it accepts invalid payloads and reports the wrong errors. Fix it so `test/validate.test.js` passes. The return shape (`{ valid, errors }`, where `errors` is an array of `{ field, message }`) must stay the same.",
+  "entryFiles": ["src/validate.js"],
+  "contextFiles": ["test/validate.test.js"],
+  "testCommand": "node --test",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}

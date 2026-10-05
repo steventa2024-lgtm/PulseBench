@@ -1,0 +1,29 @@
+{
+  "id": "js-test-132",
+  "title": "Improve edge-case coverage for duration parsing",
+  "category": "testing",
+  "language": "javascript",
+  "difficulty": "medium",
+  "description": "`src/duration.js` is correct but `test/duration.test.js` only has two shallow tests. Rewrite and extend the test file so that it covers every documented rule of `parseDuration` and `formatDuration`, including edge cases and error handling. Your tests must pass on the correct implementation and must detect every one of several subtly broken versions of it. Use `node:test` and `node:assert`. Write at least 10 tests.",
+  "entryFiles": ["src/duration.js", "test/duration.test.js"],
+  "editableFiles": ["test/duration.test.js"],
+  "testCommand": "node --test",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2,
+  "verification": {
+    "kind": "mutation",
+    "minTests": 10,
+    "mutants": [
+      { "id": "m1", "description": "unit alternation order makes 'ms' unparseable", "overlay": { "src/duration.js": "mutants/m1/duration.js" } },
+      { "id": "m2", "description": "decimal numbers are not supported", "overlay": { "src/duration.js": "mutants/m2/duration.js" } },
+      { "id": "m3", "description": "a day is 24*60*60*100 ms", "overlay": { "src/duration.js": "mutants/m3/duration.js" } },
+      { "id": "m4", "description": "formatDuration omits the millisecond component", "overlay": { "src/duration.js": "mutants/m4/duration.js" } },
+      { "id": "m5", "description": "formatDuration(0) returns an empty string", "overlay": { "src/duration.js": "mutants/m5/duration.js" } },
+      { "id": "m6", "description": "parseDuration of a blank string returns 0 instead of throwing", "overlay": { "src/duration.js": "mutants/m6/duration.js" } },
+      { "id": "m7", "description": "formatDuration accepts negative numbers", "overlay": { "src/duration.js": "mutants/m7/duration.js" } },
+      { "id": "m8", "description": "whitespace between pairs is rejected", "overlay": { "src/duration.js": "mutants/m8/duration.js" } },
+      { "id": "m9", "description": "repeated units overwrite instead of adding", "overlay": { "src/duration.js": "mutants/m9/duration.js" } },
+      { "id": "m10", "description": "results are truncated instead of rounded", "overlay": { "src/duration.js": "mutants/m10/duration.js" } }
+    ]
+  }
+}

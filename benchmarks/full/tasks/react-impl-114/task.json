@@ -1,0 +1,14 @@
+{
+  "id": "react-impl-114",
+  "title": "Build a searchable list component",
+  "category": "implementation",
+  "language": "react",
+  "difficulty": "medium",
+  "description": "Implement the `SearchableList` component in `src/SearchableList.tsx` according to its doc comment. `test/list.test.tsx` renders it with jsdom and interacts with it like a user would. Use only React (no extra libraries).",
+  "entryFiles": ["src/SearchableList.tsx"],
+  "contextFiles": ["test/list.test.tsx", "test/helpers.tsx"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

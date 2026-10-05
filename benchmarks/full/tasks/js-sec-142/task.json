@@ -1,0 +1,13 @@
+{
+  "id": "js-sec-142",
+  "title": "Prevent path traversal in file uploads",
+  "category": "security",
+  "language": "javascript",
+  "difficulty": "medium",
+  "description": "`src/files.js` serves files from an uploads directory, but `resolveUpload` can be tricked into returning paths outside of it (path traversal). Fix it according to the rules in its doc comment so that no user-supplied name can escape `baseDir`, while legitimate nested names keep working. `test/files.test.js` includes traversal attempts, a sibling-directory prefix trick and a symlink escape.",
+  "entryFiles": ["src/files.js"],
+  "contextFiles": ["test/files.test.js"],
+  "testCommand": "node --test",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}

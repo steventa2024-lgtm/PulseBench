@@ -1,0 +1,13 @@
+{
+  "id": "py-rsn-151",
+  "title": "Find why the user cache serves stale data",
+  "category": "reasoning",
+  "language": "python",
+  "difficulty": "hard",
+  "description": "A small user-lookup service caches results in a TTL cache. Users report stale data after renames, duplicate backend calls, and wrong hit/miss statistics, and several tests in `test_service.py` fail. The cause is spread over three modules (`keys.py`, `store.py`, `service.py`). Trace how a key flows from the service through `make_key` into the cache, find every root cause and fix it in the right module. Read the docstrings: they define the intended behaviour. Do not change the tests or public signatures.",
+  "entryFiles": ["keys.py", "store.py", "service.py"],
+  "contextFiles": ["test_service.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}

@@ -1,0 +1,18 @@
+[workspace]
+resolver = "2"
+members = ["crates/*", "apps/desktop/src-tauri"]
+# The Tauri shell needs system WebView libraries; everything else builds anywhere.
+default-members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+rust-version = "1.80"
+authors = ["ZeroPulse"]
+repository = "https://github.com/zeropulse/pulsebench"
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+strip = true

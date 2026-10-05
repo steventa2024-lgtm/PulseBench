@@ -1,0 +1,13 @@
+{
+  "id": "py-impl-111",
+  "title": "Implement a CSV parser",
+  "category": "implementation",
+  "language": "python",
+  "difficulty": "medium",
+  "description": "Implement `parse_line` and `parse_csv` in `csv_parser.py` following their docstrings. Do not use the `csv` module or any other third-party parsing library; the tests in `test_csv_parser.py` describe the required behaviour including quoting rules and error cases.",
+  "entryFiles": ["csv_parser.py"],
+  "contextFiles": ["test_csv_parser.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}
