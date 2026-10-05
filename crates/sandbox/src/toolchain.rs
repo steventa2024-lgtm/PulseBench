@@ -33,6 +33,49 @@ const INSTALL_PASSTHROUGH: &[&str] = &[
     "PATHEXT",
 ];
 
+/// An install in progress holds `<cache>/node-<key>.lock` (a directory: creation is atomic across
+/// threads and processes). A lock older than this is assumed to belong to a crashed process.
+const STALE_LOCK: Duration = Duration::from_secs(30 * 60);
+
+struct LockGuard(PathBuf);
+
+impl Drop for LockGuard {
+    fn drop(&mut self) {
+        let _ = fs::remove_dir(&self.0);
+    }
+}
+
+/// Wait until we own the install lock, or until another installer finished the toolchain
+/// (then `Ok(None)`). Concurrent `prepare` calls (parallel runs, UI + CLI) must never install
+/// into the same directory at the same time.
+async fn acquire_install_lock(lock: &Path, dir: &Path, cancel: &CancellationToken) -> Result<Option<LockGuard>> {
+    loop {
+        if node_toolchain_ready(dir) {
+            return Ok(None);
+        }
+        match fs::create_dir(lock) {
+            Ok(()) => return Ok(Some(LockGuard(lock.to_path_buf()))),
+            Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => {
+                let stale = fs::metadata(lock)
+                    .and_then(|m| m.modified())
+                    .ok()
+                    .and_then(|t| t.elapsed().ok())
+                    .map(|age| age > STALE_LOCK)
+                    .unwrap_or(false);
+                if stale {
+                    let _ = fs::remove_dir(lock);
+                    continue;
+                }
+                tokio::select! {
+                    _ = cancel.cancelled() => return Err(SandboxError::Toolchain("cancelled".into())),
+                    _ = tokio::time::sleep(Duration::from_millis(250)) => {}
+                }
+            }
+            Err(e) => return Err(e.into()),
+        }
+    }
+}
+
 pub fn node_toolchain_dir(cache_root: &Path, spec: &NodeToolchain, lockfile: Option<&str>) -> PathBuf {
     let mut h = Sha256::new();
     h.update(b"pulsebench-node-toolchain-v1\n");
@@ -63,6 +106,12 @@ pub async fn prepare_node_toolchain(
     if node_toolchain_ready(&dir) {
         return Ok(dir);
     }
+    fs::create_dir_all(cache_root)?;
+    let lock_path = cache_root.join(format!("{}.lock", dir.file_name().and_then(|n| n.to_str()).unwrap_or("node")));
+    let _lock = match acquire_install_lock(&lock_path, &dir, cancel).await? {
+        Some(guard) => guard,
+        None => return Ok(dir), // another installer finished while we waited
+    };
     let npm =
         resolve_program("npm").await.ok_or_else(|| SandboxError::MissingRuntime("npm was not found on PATH (install Node.js)".into()))?;
 
@@ -173,6 +222,44 @@ fn set_mode(p: &Path, is_dir: bool, readonly: bool) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn install_lock_serializes_installers_and_hands_over_a_finished_toolchain() {
+        let tmp = tempfile::tempdir().unwrap();
+        let dir = tmp.path().join("node-abc");
+        let lock = tmp.path().join("node-abc.lock");
+        let cancel = CancellationToken::new();
+
+        let first = acquire_install_lock(&lock, &dir, &cancel).await.unwrap().expect("first caller gets the lock");
+        // A second caller must wait while the first holds the lock...
+        let (l2, d2, c2) = (lock.clone(), dir.clone(), cancel.clone());
+        let second = tokio::spawn(async move { acquire_install_lock(&l2, &d2, &c2).await.map(|g| g.is_some()) });
+        tokio::time::sleep(Duration::from_millis(600)).await;
+        assert!(!second.is_finished(), "second installer must wait for the lock");
+        // ...and when the first finishes the toolchain it must not install again.
+        fs::create_dir_all(dir.join("node_modules")).unwrap();
+        fs::write(dir.join(OK_MARKER), "ok").unwrap();
+        drop(first);
+        assert!(!second.await.unwrap().unwrap(), "waiter sees the finished toolchain instead of reinstalling");
+        assert!(!lock.exists());
+    }
+
+    #[tokio::test]
+    async fn waiting_for_the_lock_is_cancellable_and_stale_locks_are_ignored_by_age_only() {
+        let tmp = tempfile::tempdir().unwrap();
+        let dir = tmp.path().join("node-x");
+        let lock = tmp.path().join("node-x.lock");
+        fs::create_dir(&lock).unwrap(); // fresh lock held by "someone else"
+        let cancel = CancellationToken::new();
+        let c2 = cancel.clone();
+        tokio::spawn(async move {
+            tokio::time::sleep(Duration::from_millis(300)).await;
+            c2.cancel();
+        });
+        let err = acquire_install_lock(&lock, &dir, &cancel).await.err().expect("must be cancelled");
+        assert!(err.to_string().contains("cancelled"));
+        assert!(lock.exists(), "a lock we do not own is never removed while fresh");
+    }
 
     #[test]
     fn toolchain_dir_is_keyed_by_content() {

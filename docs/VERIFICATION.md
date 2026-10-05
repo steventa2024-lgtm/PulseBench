@@ -7,7 +7,7 @@ This report separates **what was actually executed** during development from **w
 
 | Area | How it was verified | Result |
 |---|---|---|
-| Rust workspace | `cargo test --workspace --exclude pulsebench-desktop` | **194 passed, 0 failed** (includes ts-rs binding export tests) |
+| Rust workspace | `cargo test --workspace --exclude pulsebench-desktop` | **196 passed, 0 failed** (from a cold toolchain cache) (includes ts-rs binding export tests) |
 | Lints / format | `cargo clippy --workspace --all-targets -- -D warnings`, `cargo fmt --check` | clean |
 | UI | `tsc --noEmit` (strict, `noUncheckedIndexedAccess`), Vitest, `vite build` | 40 tests pass, build OK |
 | 25 benchmark tasks | `crates/benchmark-core/tests/official_suites.rs` runs, for **every task**, the untouched fixture (must fail) and the reference solution (must pass; mutation tasks must kill every mutant) through the real sandbox, real Python 3.11 / Node 22, a real `npm ci` of the pinned toolchain | all 25 valid. The validator caught two defects while authoring (an empty-baseline false pass and a mutant that was not killable) — both fixed |

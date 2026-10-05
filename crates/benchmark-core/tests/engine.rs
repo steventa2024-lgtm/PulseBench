@@ -322,6 +322,17 @@ async fn generation_errors_are_recorded_not_swallowed() {
 #[tokio::test(flavor = "multi_thread")]
 async fn cancellation_stops_promptly_keeps_finished_tasks_and_leaves_no_workspaces() {
     let suite = quick_suite();
+    // Warm the toolchain first: the cancel timer below must measure task execution, not a cold `npm ci`.
+    let spec = suite.manifest.toolchain.node.clone().unwrap();
+    pulsebench_sandbox::toolchain::prepare_node_toolchain(
+        &std::env::temp_dir().join("pulsebench-test-cache"),
+        &spec,
+        suite.node_lockfile.as_deref(),
+        &CancellationToken::new(),
+        &|_| {},
+    )
+    .await
+    .expect("toolchain install");
     let answers = oracle_answers(&suite);
     let p =
         Arc::new(ScriptedProvider::new("p", &["m"], Box::new(move |req, _| Ok(answers[&task_title(&req.prompt)].clone()))).with_delay(700));
