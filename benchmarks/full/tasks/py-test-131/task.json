@@ -1,0 +1,27 @@
+{
+  "id": "py-test-131",
+  "title": "Test a token-bucket rate limiter",
+  "category": "testing",
+  "language": "python",
+  "difficulty": "hard",
+  "description": "`rate_limiter.py` implements a token bucket and is correct, but it has no tests. Write a thorough unittest suite in `test_rate_limiter.py` (create it). Use a fake clock so tests are deterministic. Your tests must all pass on the correct implementation and must detect every one of several subtly broken versions of it. Cover each documented rule, including boundaries and error cases. Write at least 8 tests.",
+  "entryFiles": ["rate_limiter.py"],
+  "editableFiles": ["test_rate_limiter.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2,
+  "verification": {
+    "kind": "mutation",
+    "minTests": 8,
+    "mutants": [
+      { "id": "m1", "description": "tokens are not capped at capacity when refilling", "overlay": { "rate_limiter.py": "mutants/m1/rate_limiter.py" } },
+      { "id": "m2", "description": "allows only when tokens are strictly greater than the cost", "overlay": { "rate_limiter.py": "mutants/m2/rate_limiter.py" } },
+      { "id": "m3", "description": "always deducts one token regardless of cost", "overlay": { "rate_limiter.py": "mutants/m3/rate_limiter.py" } },
+      { "id": "m4", "description": "refill ignores elapsed time (adds one second's worth per call)", "overlay": { "rate_limiter.py": "mutants/m4/rate_limiter.py" } },
+      { "id": "m5", "description": "does not deduct tokens when a request is allowed", "overlay": { "rate_limiter.py": "mutants/m5/rate_limiter.py" } },
+      { "id": "m6", "description": "accepts a cost larger than the capacity", "overlay": { "rate_limiter.py": "mutants/m6/rate_limiter.py" } },
+      { "id": "m7", "description": "a clock that goes backwards removes tokens", "overlay": { "rate_limiter.py": "mutants/m7/rate_limiter.py" } },
+      { "id": "m8", "description": "accepts a capacity of zero", "overlay": { "rate_limiter.py": "mutants/m8/rate_limiter.py" } }
+    ]
+  }
+}

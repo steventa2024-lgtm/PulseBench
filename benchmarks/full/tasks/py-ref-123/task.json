@@ -1,0 +1,13 @@
+{
+  "id": "py-ref-123",
+  "title": "Break the report function into helpers",
+  "category": "refactoring",
+  "language": "python",
+  "difficulty": "medium",
+  "description": "`report.py` contains one large `process_report` function. Refactor it into three module-level helpers with exactly these signatures and behaviours, and make `process_report` use them while keeping its behaviour identical:\n\n- `parse_line(line, lineno)` -> dict or None. Returns None for blank lines and lines starting with `#`. Otherwise splits `date,user,kind,amount` (exactly 4 comma-separated fields, each stripped) and returns {\"date\": str, \"user\": str, \"kind\": str, \"amount\": Decimal}. Raises ValueError(f\"line {lineno}: expected 4 fields\") or ValueError(f\"line {lineno}: invalid amount\") for malformed lines.\n- `validate_record(record, lineno)` -> None. Raises ValueError(f\"line {lineno}: <reason>\") with reason `invalid date` (not a real YYYY-MM-DD date), `empty user`, `unknown kind` (must be deposit or withdrawal) or `amount must be positive`, checked in that order.\n- `summarize(records)` -> dict with `totals` (user -> Decimal balance; deposits add, withdrawals subtract), `count` (number of records) and `largest` ((user, amount) of the biggest single amount, first one wins ties, or None when there are no records).\n\nThe tests in `test_report.py` cover both the helpers and `process_report`.",
+  "entryFiles": ["report.py"],
+  "contextFiles": ["test_report.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}

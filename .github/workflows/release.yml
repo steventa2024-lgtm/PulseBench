@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Windows installer and CLI
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - name: Build desktop installers (NSIS + MSI)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: apps/desktop
+          tagName: ${{ github.ref_name }}
+          releaseName: "PulseBench ${{ github.ref_name }}"
+          releaseBody: "See CHANGELOG.md. Windows installers are unsigned unless code-signing secrets are configured."
+          releaseDraft: true
+          prerelease: false
+      - name: Build CLI
+        run: cargo build --release -p pulsebench-cli
+      - name: Package CLI with bundled suites
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist/pulsebench-cli | Out-Null
+          Copy-Item target/release/pulsebench.exe dist/pulsebench-cli/
+          Copy-Item -Recurse benchmarks dist/pulsebench-cli/benchmarks
+          Compress-Archive -Path dist/pulsebench-cli/* -DestinationPath pulsebench-cli-windows-x64.zip
+      - name: Attach CLI to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: pulsebench-cli-windows-x64.zip

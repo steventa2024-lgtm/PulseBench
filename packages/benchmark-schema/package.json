@@ -1,0 +1,7 @@
+{
+  "name": "@pulsebench/benchmark-schema",
+  "version": "0.1.0",
+  "description": "JSON Schemas for the public PulseBench formats: result, suite and task (v1).",
+  "files": ["*.schema.json"],
+  "license": "MIT"
+}

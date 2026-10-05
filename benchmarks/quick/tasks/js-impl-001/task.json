@@ -1,0 +1,13 @@
+{
+  "id": "js-impl-001",
+  "title": "Implement array and object utilities",
+  "category": "implementation",
+  "language": "javascript",
+  "difficulty": "easy",
+  "description": "Implement the four utility functions in `src/utils.js` (they currently throw `not implemented`). Follow the doc comments exactly; the tests in `test/utils.test.js` describe the expected edge cases. Use plain CommonJS and no external packages.",
+  "entryFiles": ["src/utils.js"],
+  "contextFiles": ["test/utils.test.js"],
+  "testCommand": "node --test",
+  "timeoutSeconds": 60,
+  "maxAttempts": 1
+}

@@ -1,0 +1,2 @@
+# Benchmark content is hashed byte-for-byte (after CRLF normalization); keep LF on every platform.
+* text=auto eol=lf

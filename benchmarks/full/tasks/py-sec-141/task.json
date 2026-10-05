@@ -1,0 +1,13 @@
+{
+  "id": "py-sec-141",
+  "title": "Fix SQL injection in the user repository",
+  "category": "security",
+  "language": "python",
+  "difficulty": "medium",
+  "description": "`users_repo.py` builds SQL strings by interpolating user input, which allows SQL injection. Fix every function so untrusted values can never change the query structure: use parameterized queries for values, and a strict allow-list for anything that cannot be parameterized (column names, sort direction). The documented behaviour (including the validation rules in the docstrings) must hold; `test_users_repo.py` includes injection attempts.",
+  "entryFiles": ["users_repo.py"],
+  "contextFiles": ["test_users_repo.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}

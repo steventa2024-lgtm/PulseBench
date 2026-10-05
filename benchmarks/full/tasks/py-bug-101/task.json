@@ -1,0 +1,13 @@
+{
+  "id": "py-bug-101",
+  "title": "Fix pagination off-by-one errors",
+  "category": "bugfix",
+  "language": "python",
+  "difficulty": "easy",
+  "description": "`paginate.py` has several off-by-one and rounding bugs. Fix the implementation so all tests in `test_paginate.py` pass. Pages are 1-based. Do not change the function signatures.",
+  "entryFiles": ["paginate.py"],
+  "contextFiles": ["test_paginate.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 2
+}

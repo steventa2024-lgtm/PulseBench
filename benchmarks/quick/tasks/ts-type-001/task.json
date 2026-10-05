@@ -1,0 +1,14 @@
+{
+  "id": "ts-type-001",
+  "title": "Repair the cart type errors",
+  "category": "bugfix",
+  "language": "typescript",
+  "difficulty": "easy",
+  "description": "`src/cart.ts` does not compile under `strict` mode, and once it compiles the tests in `test/cart.test.ts` still fail. Fix the types and the logic in `src/cart.ts`. Keep the exported function names and signatures (return types may be corrected where they are wrong).",
+  "entryFiles": ["src/cart.ts"],
+  "contextFiles": ["test/cart.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 1
+}

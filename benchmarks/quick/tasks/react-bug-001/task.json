@@ -1,0 +1,14 @@
+{
+  "id": "react-bug-001",
+  "title": "Repair the todo list component",
+  "category": "bugfix",
+  "language": "react",
+  "difficulty": "medium",
+  "description": "`src/TodoList.tsx` is a small React component. Adding and completing todos does not update the screen correctly and the tests in `test/todo.test.tsx` fail. Fix the component (state must be updated immutably, list items need stable keys, and the remaining count must be right). Keep the component's name, export and props.",
+  "entryFiles": ["src/TodoList.tsx"],
+  "contextFiles": ["test/todo.test.tsx", "test/helpers.tsx"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 1
+}

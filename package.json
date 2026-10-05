@@ -1,0 +1,27 @@
+{
+  "name": "pulsebench-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "PulseBench \u2014 real coding benchmarks on your hardware.",
+  "license": "MIT",
+  "workspaces": [
+    "apps/desktop",
+    "packages/*"
+  ],
+  "scripts": {
+    "gen:types": "cargo test -p pulsebench-types -p pulsebench-app --quiet && node scripts/gen-types-index.mjs",
+    "gen:schema": "cargo run -q -p pulsebench-cli -- schema --out packages/benchmark-schema",
+    "typecheck": "npm run typecheck -w apps/desktop",
+    "test:ui": "npm run test -w apps/desktop",
+    "build:ui": "npm run build -w apps/desktop",
+    "dev": "npm run dev -w apps/desktop",
+    "desktop:dev": "npm run tauri -w apps/desktop -- dev",
+    "desktop:build": "npm run tauri -w apps/desktop -- build",
+    "e2e": "npm run e2e -w apps/desktop"
+  },
+  "author": "ZeroPulse AI",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steventa2024-lgtm/PulseBench.git"
+  }
+}

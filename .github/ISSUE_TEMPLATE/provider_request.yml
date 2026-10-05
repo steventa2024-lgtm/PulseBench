@@ -1,0 +1,15 @@
+name: Provider request
+description: Ask for support for another inference provider
+labels: [provider]
+body:
+  - type: input
+    id: provider
+    attributes: { label: Provider, placeholder: "llama.cpp server / vLLM / OpenRouter …" }
+    validations: { required: true }
+  - type: textarea
+    id: api
+    attributes: { label: API details, description: "Endpoints for listing models and streaming generation; which token/timing metrics it reports; how the context size is set." }
+    validations: { required: true }
+  - type: dropdown
+    id: contribute
+    attributes: { label: Can you help implement or test it?, options: ["Yes, I can implement it", "I can test it", "No"] }

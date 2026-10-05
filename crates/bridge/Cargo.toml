@@ -1,0 +1,25 @@
+[package]
+name = "pulsebench-bridge"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+axum = "0.8.9"
+clap = { version = "4.5.61", features = ["derive", "env"] }
+futures-util = "0.3.34"
+pulsebench-app = { version = "0.1.0", path = "../app" }
+pulsebench-types = { version = "0.1.0", path = "../types" }
+serde_json = "1.0.151"
+tokio = { version = "1.53.2", features = ["rt-multi-thread", "macros", "signal"] }
+tokio-stream = { version = "0.1.19", features = ["sync"] }
+tower-http = { version = "0.7.1", features = ["cors"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.23"
+
+[[bin]]
+name = "pulsebench-bridge"
+path = "src/main.rs"

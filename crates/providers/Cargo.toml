@@ -1,0 +1,24 @@
+[package]
+name = "pulsebench-providers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+async-trait = "0.1.92"
+futures-util = "0.3.34"
+pulsebench-types = { version = "0.1.0", path = "../types" }
+reqwest = { version = "0.13.3", default-features = false, features = ["json", "stream", "rustls", "system-proxy"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+thiserror = "2.0.21"
+tokio = { version = "1.53.2", features = ["rt", "macros", "time", "sync"] }
+tokio-util = "0.7.19"
+tracing = "0.1.44"
+
+[dev-dependencies]
+axum = "0.8.9"
+tokio = { version = "1.53.2", features = ["full"] }

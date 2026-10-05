@@ -1,0 +1,14 @@
+{
+  "id": "ts-bug-103",
+  "title": "Fix the shopping cart reducer",
+  "category": "bugfix",
+  "language": "typescript",
+  "difficulty": "medium",
+  "description": "`src/reducer.ts` is a state reducer for a shopping cart. It mutates its input state, mishandles quantities and returns new objects for no-op actions. Fix it so `test/reducer.test.ts` passes. Reducers must be pure: never mutate the previous state, and return the *same* state object when an action changes nothing.",
+  "entryFiles": ["src/reducer.ts"],
+  "contextFiles": ["test/reducer.test.ts"],
+  "compileCommand": "node node_modules/typescript/bin/tsc -p tsconfig.json",
+  "testCommand": "node --test dist/test/*.test.js",
+  "timeoutSeconds": 120,
+  "maxAttempts": 2
+}

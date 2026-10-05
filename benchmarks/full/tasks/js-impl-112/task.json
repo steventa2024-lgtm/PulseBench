@@ -1,0 +1,13 @@
+{
+  "id": "js-impl-112",
+  "title": "Implement a REST todo endpoint",
+  "category": "implementation",
+  "language": "javascript",
+  "difficulty": "medium",
+  "description": "Implement `createServer(store)` in `src/server.js` using only Node's built-in `http` module. It must return an `http.Server` (not yet listening) that exposes the REST API described in the doc comment, backed by the provided in-memory `store` (see `src/store.js`, which you must not change). `test/server.test.js` starts the server on an ephemeral port and exercises it with `fetch`.",
+  "entryFiles": ["src/server.js"],
+  "contextFiles": ["src/store.js", "test/server.test.js"],
+  "testCommand": "node --test",
+  "timeoutSeconds": 90,
+  "maxAttempts": 2
+}

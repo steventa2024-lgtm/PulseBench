@@ -1,0 +1,1878 @@
+{
+  "$defs": {
+    "AppliedChange": {
+      "properties": {
+        "bytes": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "path": {
+          "type": "string"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "$ref": "#/$defs/ChangeStatus"
+        }
+      },
+      "required": [
+        "path",
+        "bytes",
+        "status"
+      ],
+      "type": "object"
+    },
+    "Attempt": {
+      "properties": {
+        "changes": {
+          "items": {
+            "$ref": "#/$defs/AppliedChange"
+          },
+          "type": "array"
+        },
+        "compile": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diff": {
+          "description": "Unified diff of everything the model changed.",
+          "type": "string"
+        },
+        "durationMs": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FailureKind"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "generation": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GenerationResult"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mutants": {
+          "items": {
+            "$ref": "#/$defs/MutantOutcome"
+          },
+          "type": "array"
+        },
+        "number": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "parse": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParseReport"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prompt": {
+          "$ref": "#/$defs/PromptRecord"
+        },
+        "resources": {
+          "$ref": "#/$defs/ResourceSummary"
+        },
+        "solved": {
+          "type": "boolean"
+        },
+        "startedAt": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "tests": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TestOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "number",
+        "prompt",
+        "changes",
+        "diff",
+        "mutants",
+        "resources",
+        "solved",
+        "startedAt",
+        "durationMs"
+      ],
+      "type": "object"
+    },
+    "Baseline": {
+      "description": "Outcome of running the untouched fixture, recorded to prove the task is not trivially passing.",
+      "properties": {
+        "alreadyPassing": {
+          "description": "The unmodified fixture already satisfies verification (the task is suspect).",
+          "type": "boolean"
+        },
+        "compile": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CommandOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tests": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TestOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "alreadyPassing"
+      ],
+      "type": "object"
+    },
+    "Category": {
+      "enum": [
+        "bugfix",
+        "implementation",
+        "refactoring",
+        "testing",
+        "security",
+        "reasoning"
+      ],
+      "type": "string"
+    },
+    "CategoryScore": {
+      "properties": {
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "passed": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "score": {
+          "description": "`0.0..=100.0`",
+          "format": "double",
+          "type": "number"
+        },
+        "tasks": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "category",
+        "score",
+        "tasks",
+        "passed"
+      ],
+      "type": "object"
+    },
+    "ChangeStatus": {
+      "enum": [
+        "applied",
+        "rejected"
+      ],
+      "type": "string"
+    },
+    "CommandOutcome": {
+      "properties": {
+        "cancelled": {
+          "type": "boolean"
+        },
+        "command": {
+          "type": "string"
+        },
+        "durationMs": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "exitCode": {
+          "format": "int32",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "spawnError": {
+          "description": "The process could not be started (missing runtime, denied by policy, ...).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stderr": {
+          "type": "string"
+        },
+        "stdout": {
+          "type": "string"
+        },
+        "timedOut": {
+          "type": "boolean"
+        },
+        "truncated": {
+          "description": "Output exceeded the capture limit and was cut.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "command",
+        "timedOut",
+        "cancelled",
+        "durationMs",
+        "stdout",
+        "stderr",
+        "truncated"
+      ],
+      "type": "object"
+    },
+    "ComponentScores": {
+      "description": "Per-component scores in `0.0..=1.0`. `None` = not applicable (e.g. no compile step).",
+      "properties": {
+        "compile": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "correctness": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "efficiency": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "reliability": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "speed": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "tests": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "Difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "type": "string"
+    },
+    "DifficultyWeights": {
+      "properties": {
+        "easy": {
+          "default": 1.0,
+          "format": "double",
+          "type": "number"
+        },
+        "hard": {
+          "default": 3.0,
+          "format": "double",
+          "type": "number"
+        },
+        "medium": {
+          "default": 2.0,
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "DockerImages": {
+      "properties": {
+        "node": {
+          "default": "node:22-slim",
+          "type": "string"
+        },
+        "python": {
+          "default": "python:3.12-slim",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "DockerStatus": {
+      "properties": {
+        "installed": {
+          "type": "boolean"
+        },
+        "running": {
+          "description": "Daemon reachable (`docker info` succeeded).",
+          "type": "boolean"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "installed",
+        "running"
+      ],
+      "type": "object"
+    },
+    "ExecutionMode": {
+      "oneOf": [
+        {
+          "const": "local",
+          "description": "Disposable temp directory on the host with a sanitized environment.\nNOT an OS-level security boundary.",
+          "type": "string"
+        },
+        {
+          "const": "docker",
+          "description": "`docker run --network none` with the workspace bind-mounted.",
+          "type": "string"
+        }
+      ]
+    },
+    "FailureKind": {
+      "enum": [
+        "provider-error",
+        "generation-timeout",
+        "truncated",
+        "protocol-failure",
+        "no-valid-changes",
+        "compile-failed",
+        "tests-failed",
+        "test-timeout",
+        "no-tests-found",
+        "mutants-survived",
+        "too-few-tests",
+        "cancelled"
+      ],
+      "type": "string"
+    },
+    "FinishReason": {
+      "oneOf": [
+        {
+          "enum": [
+            "other"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "stop",
+          "description": "Model stopped on its own.",
+          "type": "string"
+        },
+        {
+          "const": "length",
+          "description": "Output hit the token limit (truncated).",
+          "type": "string"
+        }
+      ]
+    },
+    "GenerationResult": {
+      "description": "Result of one generation call. Missing metrics stay `None`.",
+      "properties": {
+        "completionTokens": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "durationMs": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "finishReason": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FinishReason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "loadDurationMs": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "metricSource": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MetricSource"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model": {
+          "type": "string"
+        },
+        "promptTokens": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "provider": {
+          "type": "string"
+        },
+        "reasoning": {
+          "description": "Reasoning/\"thinking\" text if the provider returns it separately.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "timeToFirstTokenMs": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "tokensPerSecond": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "totalTokens": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "text",
+        "model",
+        "provider",
+        "durationMs"
+      ],
+      "type": "object"
+    },
+    "GenerationSettings": {
+      "description": "Generation settings applied identically to every model in a run.",
+      "properties": {
+        "contextTokens": {
+          "default": 16384,
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "maxOutputTokens": {
+          "default": 8192,
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "seed": {
+          "default": 42,
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "temperature": {
+          "default": 0.0,
+          "format": "float",
+          "type": "number"
+        },
+        "timeoutSeconds": {
+          "default": 600,
+          "description": "Wall-clock limit for a single generation call.",
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "GpuInfo": {
+      "properties": {
+        "driverVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "telemetryAvailable": {
+          "description": "`true` when utilization/VRAM/temperature can be sampled live (nvidia-smi).",
+          "type": "boolean"
+        },
+        "vendor": {
+          "$ref": "#/$defs/GpuVendor"
+        },
+        "vramTotalMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "vramUsedMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "vendor",
+        "telemetryAvailable"
+      ],
+      "type": "object"
+    },
+    "GpuVendor": {
+      "enum": [
+        "nvidia",
+        "amd",
+        "intel",
+        "apple",
+        "other"
+      ],
+      "type": "string"
+    },
+    "Language": {
+      "oneOf": [
+        {
+          "enum": [
+            "python",
+            "javascript",
+            "typescript"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "react",
+          "description": "TypeScript + JSX (React function components).",
+          "type": "string"
+        }
+      ]
+    },
+    "LogEntry": {
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/LogLevel"
+        },
+        "message": {
+          "type": "string"
+        },
+        "scope": {
+          "description": "Upper-case area tag: BENCHMARK, MODEL, TASK, GENERATION, PATCH, COMPILE, TEST, SCORE, ...",
+          "type": "string"
+        },
+        "ts": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ts",
+        "level",
+        "scope",
+        "message"
+      ],
+      "type": "object"
+    },
+    "LogLevel": {
+      "enum": [
+        "info",
+        "warn",
+        "error"
+      ],
+      "type": "string"
+    },
+    "MetricSource": {
+      "oneOf": [
+        {
+          "const": "provider-reported",
+          "description": "Counts/timings reported by the provider itself.",
+          "type": "string"
+        },
+        {
+          "const": "client-measured",
+          "description": "Derived from wall-clock measurements taken by PulseBench.",
+          "type": "string"
+        }
+      ]
+    },
+    "ModelInfo": {
+      "description": "Metadata about an installed model. Everything the provider did not report is `None`.",
+      "properties": {
+        "architecture": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contextLength": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "family": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "format": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "Identifier to pass back to the provider (`qwen3-coder:30b`).",
+          "type": "string"
+        },
+        "loaded": {
+          "description": "Currently loaded into memory (if the provider reports it).",
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "modifiedAt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parameterSize": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "providerId": {
+          "type": "string"
+        },
+        "providerKind": {
+          "$ref": "#/$defs/ProviderKind"
+        },
+        "quantization": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sizeBytes": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "providerId",
+        "providerKind",
+        "id",
+        "displayName"
+      ],
+      "type": "object"
+    },
+    "ModelResidency": {
+      "description": "Memory footprint of a loaded model as reported by the provider (Ollama `/api/ps`).",
+      "properties": {
+        "contextLength": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "sizeBytes": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "sizeVramBytes": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "sizeBytes"
+      ],
+      "type": "object"
+    },
+    "ModelResult": {
+      "properties": {
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "key": {
+          "description": "Stable key `providerId/modelId`.",
+          "type": "string"
+        },
+        "model": {
+          "$ref": "#/$defs/ModelInfo"
+        },
+        "residency": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelResidency"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "score": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ModelScore"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stats": {
+          "$ref": "#/$defs/ModelStats"
+        },
+        "status": {
+          "$ref": "#/$defs/ModelRunStatus"
+        },
+        "tasks": {
+          "items": {
+            "$ref": "#/$defs/TaskResult"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "key",
+        "model",
+        "status",
+        "stats",
+        "tasks"
+      ],
+      "type": "object"
+    },
+    "ModelRunStatus": {
+      "enum": [
+        "pending",
+        "running",
+        "completed",
+        "cancelled",
+        "failed"
+      ],
+      "type": "string"
+    },
+    "ModelScore": {
+      "properties": {
+        "categories": {
+          "items": {
+            "$ref": "#/$defs/CategoryScore"
+          },
+          "type": "array"
+        },
+        "components": {
+          "$ref": "#/$defs/ComponentScores"
+        },
+        "formula": {
+          "type": "string"
+        },
+        "pulsebenchScore": {
+          "description": "`0..=10000`",
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pulsebenchScore",
+        "components",
+        "categories",
+        "formula"
+      ],
+      "type": "object"
+    },
+    "ModelStats": {
+      "properties": {
+        "avgGenerationSeconds": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "avgTimeToFirstTokenMs": {
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "avgTokensPerSecond": {
+          "description": "Mean of per-attempt tokens/second.",
+          "format": "double",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "compileFailures": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "passRate": {
+          "description": "Passed / scored tasks, `0.0..=1.0`.",
+          "format": "double",
+          "type": "number"
+        },
+        "protocolFailures": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "repairAttempts": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "resources": {
+          "$ref": "#/$defs/ResourceSummary"
+        },
+        "runtimeFailures": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tasksError": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tasksFailed": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tasksPassed": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tasksSkipped": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "tasksTotal": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "totalCompletionTokens": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "totalPromptTokens": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "totalSeconds": {
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "required": [
+        "tasksTotal",
+        "tasksPassed",
+        "tasksFailed",
+        "tasksSkipped",
+        "tasksError",
+        "passRate",
+        "totalPromptTokens",
+        "totalCompletionTokens",
+        "totalSeconds",
+        "repairAttempts",
+        "compileFailures",
+        "runtimeFailures",
+        "protocolFailures",
+        "resources"
+      ],
+      "type": "object"
+    },
+    "MutantOutcome": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "durationMs": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "exitCode": {
+          "format": "int32",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "killed": {
+          "description": "The model's tests failed on this broken implementation (what we want).",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "description",
+        "killed",
+        "durationMs"
+      ],
+      "type": "object"
+    },
+    "ParseMode": {
+      "oneOf": [
+        {
+          "enum": [
+            "failed"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "json",
+          "description": "Clean protocol JSON.",
+          "type": "string"
+        },
+        {
+          "const": "recovered",
+          "description": "Protocol JSON recovered from fences/prose, or files recovered from markdown code blocks.",
+          "type": "string"
+        }
+      ]
+    },
+    "ParseReport": {
+      "properties": {
+        "explanation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mode": {
+          "$ref": "#/$defs/ParseMode"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "mode",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "PromptRecord": {
+      "properties": {
+        "files": {
+          "description": "Workspace-relative paths whose contents were included in the prompt.",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "system": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "system",
+        "user",
+        "files"
+      ],
+      "type": "object"
+    },
+    "ProviderCapabilities": {
+      "description": "What a provider can and cannot honour; recorded with every result.",
+      "properties": {
+        "honorsContextLength": {
+          "description": "`false` means the provider uses whatever context the model was loaded with.",
+          "type": "boolean"
+        },
+        "honorsSeed": {
+          "type": "boolean"
+        },
+        "reportsTiming": {
+          "type": "boolean"
+        },
+        "reportsTokenCounts": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "honorsSeed",
+        "honorsContextLength",
+        "reportsTokenCounts",
+        "reportsTiming"
+      ],
+      "type": "object"
+    },
+    "ProviderKind": {
+      "enum": [
+        "ollama",
+        "openai-compatible"
+      ],
+      "type": "string"
+    },
+    "ProviderSnapshot": {
+      "description": "Provider description stored with results (no credentials).",
+      "properties": {
+        "baseUrl": {
+          "type": "string"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/ProviderCapabilities"
+        },
+        "id": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ProviderKind"
+        },
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "baseUrl",
+        "capabilities"
+      ],
+      "type": "object"
+    },
+    "ResourceSummary": {
+      "description": "Peak/average resource figures over a time window (a task or a whole model).",
+      "properties": {
+        "avgCpuPercent": {
+          "format": "float",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "peakCpuPercent": {
+          "format": "float",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "peakGpuPercent": {
+          "format": "float",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "peakGpuTempC": {
+          "format": "float",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "peakRamMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "peakVramMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "samples": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "samples"
+      ],
+      "type": "object"
+    },
+    "RunSettings": {
+      "description": "Everything that influences a run; stored with the result for reproducibility.",
+      "properties": {
+        "dockerImages": {
+          "$ref": "#/$defs/DockerImages",
+          "default": {
+            "node": "node:22-slim",
+            "python": "python:3.12-slim"
+          }
+        },
+        "execution": {
+          "$ref": "#/$defs/ExecutionMode",
+          "default": "local"
+        },
+        "generation": {
+          "$ref": "#/$defs/GenerationSettings",
+          "default": {
+            "contextTokens": 16384,
+            "maxOutputTokens": 8192,
+            "seed": 42,
+            "temperature": 0.0,
+            "timeoutSeconds": 600
+          }
+        },
+        "scoring": {
+          "$ref": "#/$defs/ScoringConfig",
+          "default": {
+            "difficultyWeights": {
+              "easy": 1.0,
+              "hard": 3.0,
+              "medium": 2.0
+            },
+            "formula": "pulsebench-score-v1",
+            "speedCeilingTps": 100.0,
+            "speedFloorTps": 5.0,
+            "weights": {
+              "compile": 5.0,
+              "correctness": 60.0,
+              "efficiency": 5.0,
+              "reliability": 5.0,
+              "speed": 5.0,
+              "tests": 20.0
+            }
+          }
+        },
+        "systemPromptVersion": {
+          "default": "pulsebench-prompt-v1",
+          "description": "Fixed system prompt text shared by all models (recorded verbatim in results).",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "RunStatus": {
+      "oneOf": [
+        {
+          "enum": [
+            "running",
+            "completed",
+            "cancelled",
+            "failed"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "interrupted",
+          "description": "The app exited while the run was in progress; completed tasks were kept.",
+          "type": "string"
+        }
+      ]
+    },
+    "RuntimeStatus": {
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "available"
+      ],
+      "type": "object"
+    },
+    "ScoreWeights": {
+      "properties": {
+        "compile": {
+          "default": 5.0,
+          "format": "double",
+          "type": "number"
+        },
+        "correctness": {
+          "default": 60.0,
+          "format": "double",
+          "type": "number"
+        },
+        "efficiency": {
+          "default": 5.0,
+          "format": "double",
+          "type": "number"
+        },
+        "reliability": {
+          "default": 5.0,
+          "format": "double",
+          "type": "number"
+        },
+        "speed": {
+          "default": 5.0,
+          "format": "double",
+          "type": "number"
+        },
+        "tests": {
+          "default": 20.0,
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "type": "object"
+    },
+    "ScoringConfig": {
+      "properties": {
+        "difficultyWeights": {
+          "$ref": "#/$defs/DifficultyWeights",
+          "default": {
+            "easy": 1.0,
+            "hard": 3.0,
+            "medium": 2.0
+          }
+        },
+        "formula": {
+          "default": "pulsebench-score-v1",
+          "type": "string"
+        },
+        "speedCeilingTps": {
+          "default": 100.0,
+          "description": "Generation speed at or above this maps to a speed component of 1.",
+          "format": "double",
+          "type": "number"
+        },
+        "speedFloorTps": {
+          "default": 5.0,
+          "description": "Generation speed at or below this maps to a speed component of 0.",
+          "format": "double",
+          "type": "number"
+        },
+        "weights": {
+          "$ref": "#/$defs/ScoreWeights",
+          "default": {
+            "compile": 5.0,
+            "correctness": 60.0,
+            "efficiency": 5.0,
+            "reliability": 5.0,
+            "speed": 5.0,
+            "tests": 20.0
+          }
+        }
+      },
+      "type": "object"
+    },
+    "SuiteRef": {
+      "properties": {
+        "contentHash": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "official": {
+          "type": "boolean"
+        },
+        "taskCount": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "version",
+        "contentHash",
+        "official",
+        "taskCount"
+      ],
+      "type": "object"
+    },
+    "SystemInfo": {
+      "properties": {
+        "arch": {
+          "type": "string"
+        },
+        "cpuLogicalCores": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "cpuModel": {
+          "type": "string"
+        },
+        "cpuPhysicalCores": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "docker": {
+          "$ref": "#/$defs/DockerStatus",
+          "description": "Detected container runtime, if any."
+        },
+        "gpus": {
+          "items": {
+            "$ref": "#/$defs/GpuInfo"
+          },
+          "type": "array"
+        },
+        "hostnameHash": {
+          "type": "string"
+        },
+        "osName": {
+          "type": "string"
+        },
+        "osVersion": {
+          "type": "string"
+        },
+        "ramAvailableMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ramTotalMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "runtimes": {
+          "items": {
+            "$ref": "#/$defs/RuntimeStatus"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "osName",
+        "osVersion",
+        "arch",
+        "hostnameHash",
+        "cpuModel",
+        "cpuLogicalCores",
+        "ramTotalMb",
+        "ramAvailableMb",
+        "gpus",
+        "docker",
+        "runtimes"
+      ],
+      "type": "object"
+    },
+    "TaskResult": {
+      "properties": {
+        "attempts": {
+          "items": {
+            "$ref": "#/$defs/Attempt"
+          },
+          "type": "array"
+        },
+        "baseline": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Baseline"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "category": {
+          "$ref": "#/$defs/Category"
+        },
+        "difficulty": {
+          "$ref": "#/$defs/Difficulty"
+        },
+        "durationMs": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "failure": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FailureKind"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "type": "string"
+        },
+        "language": {
+          "$ref": "#/$defs/Language"
+        },
+        "maxAttempts": {
+          "description": "Attempts the task allowed (`maxAttempts` in task.json).",
+          "format": "uint32",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "score": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TaskScore"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "startedAt": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/TaskStatus"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "category",
+        "language",
+        "difficulty",
+        "status",
+        "maxAttempts",
+        "attempts",
+        "startedAt",
+        "durationMs"
+      ],
+      "type": "object"
+    },
+    "TaskScore": {
+      "properties": {
+        "components": {
+          "$ref": "#/$defs/ComponentScores"
+        },
+        "value": {
+          "description": "`0.0..=100.0`",
+          "format": "double",
+          "type": "number"
+        },
+        "weight": {
+          "description": "Difficulty weight used when aggregating.",
+          "format": "double",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "components",
+        "weight"
+      ],
+      "type": "object"
+    },
+    "TaskStatus": {
+      "oneOf": [
+        {
+          "const": "passed",
+          "description": "Verification fully passed.",
+          "type": "string"
+        },
+        {
+          "const": "failed",
+          "description": "The model produced a result that did not satisfy verification.",
+          "type": "string"
+        },
+        {
+          "const": "skipped",
+          "description": "The host could not run the task (missing runtime). Excluded from scoring.",
+          "type": "string"
+        },
+        {
+          "const": "error",
+          "description": "Infrastructure/provider error. Scored as a failure and flagged.",
+          "type": "string"
+        }
+      ]
+    },
+    "TelemetrySample": {
+      "properties": {
+        "cpuPercent": {
+          "description": "Whole-system CPU utilization, percent.",
+          "format": "float",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "gpuPercent": {
+          "format": "float",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "gpuTempC": {
+          "format": "float",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "ramTotalMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ramUsedMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": "integer"
+        },
+        "ts": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "vramTotalMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "vramUsedMb": {
+          "format": "uint64",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "ts",
+        "ramUsedMb",
+        "ramTotalMb"
+      ],
+      "type": "object"
+    },
+    "TelemetrySeries": {
+      "properties": {
+        "modelKey": {
+          "type": "string"
+        },
+        "samples": {
+          "items": {
+            "$ref": "#/$defs/TelemetrySample"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "modelKey",
+        "samples"
+      ],
+      "type": "object"
+    },
+    "TestOutcome": {
+      "properties": {
+        "command": {
+          "$ref": "#/$defs/CommandOutcome"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "summary": {
+          "$ref": "#/$defs/TestSummary"
+        }
+      },
+      "required": [
+        "command",
+        "summary",
+        "passed"
+      ],
+      "type": "object"
+    },
+    "TestSummary": {
+      "properties": {
+        "failed": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "passed": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "skipped": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "total": {
+          "format": "uint32",
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    }
+  },
+  "$id": "https://pulsebench.dev/schema/pulsebench-result-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "appVersion": {
+      "type": "string"
+    },
+    "createdAt": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "finishedAt": {
+      "format": "date-time",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "id": {
+      "type": "string"
+    },
+    "log": {
+      "items": {
+        "$ref": "#/$defs/LogEntry"
+      },
+      "type": "array"
+    },
+    "models": {
+      "items": {
+        "$ref": "#/$defs/ModelResult"
+      },
+      "type": "array"
+    },
+    "notes": {
+      "description": "Honest caveats attached to this run (execution mode, unavailable metrics, ...).",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "providers": {
+      "items": {
+        "$ref": "#/$defs/ProviderSnapshot"
+      },
+      "type": "array"
+    },
+    "schema": {
+      "description": "Always `pulsebench-result-v1`.",
+      "type": "string"
+    },
+    "settings": {
+      "$ref": "#/$defs/RunSettings"
+    },
+    "standardSettings": {
+      "description": "Settings equal the standardized defaults (results are comparable with other standard runs).",
+      "type": "boolean"
+    },
+    "status": {
+      "$ref": "#/$defs/RunStatus"
+    },
+    "suite": {
+      "$ref": "#/$defs/SuiteRef"
+    },
+    "system": {
+      "$ref": "#/$defs/SystemInfo"
+    },
+    "telemetry": {
+      "items": {
+        "$ref": "#/$defs/TelemetrySeries"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "createdAt",
+    "status",
+    "appVersion",
+    "suite",
+    "settings",
+    "standardSettings",
+    "system",
+    "providers",
+    "models",
+    "log",
+    "telemetry",
+    "notes"
+  ],
+  "title": "PulseBench run result",
+  "type": "object"
+}

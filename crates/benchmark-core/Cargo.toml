@@ -1,0 +1,31 @@
+[package]
+name = "pulsebench-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+async-trait = "0.1.92"
+chrono = "0.4.45"
+pulsebench-providers = { version = "0.1.0", path = "../providers" }
+pulsebench-sandbox = { version = "0.1.0", path = "../sandbox" }
+pulsebench-scoring = { version = "0.1.0", path = "../scoring" }
+pulsebench-telemetry = { version = "0.1.0", path = "../telemetry" }
+pulsebench-types = { version = "0.1.0", path = "../types" }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+sha2 = "0.10.9"
+similar = "2.7.0"
+thiserror = "2.0.21"
+tokio = { version = "1.53.2", features = ["rt", "macros", "time", "sync", "fs"] }
+tokio-util = "0.7.19"
+tracing = "0.1.44"
+uuid = { version = "1.20.0", features = ["v4"] }
+
+[dev-dependencies]
+jsonschema = "0.33.0"
+tempfile = "3.27.0"
+tokio = { version = "1.53.2", features = ["full"] }

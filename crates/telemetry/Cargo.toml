@@ -1,0 +1,20 @@
+[package]
+name = "pulsebench-telemetry"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+chrono = "0.4.45"
+pulsebench-sandbox = { version = "0.1.0", path = "../sandbox" }
+pulsebench-types = { version = "0.1.0", path = "../types" }
+serde_json = "1.0.151"
+sha2 = "0.10.9"
+sysinfo = "0.36.1"
+tokio = { version = "1.53.2", features = ["rt", "time", "sync", "process", "macros"] }
+tokio-util = "0.7.19"
+tracing = "0.1.44"
+which = "8.0.6"

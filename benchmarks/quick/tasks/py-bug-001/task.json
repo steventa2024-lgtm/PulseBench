@@ -1,0 +1,13 @@
+{
+  "id": "py-bug-001",
+  "title": "Fix the low-stock report",
+  "category": "bugfix",
+  "language": "python",
+  "difficulty": "easy",
+  "description": "The inventory helpers in `inventory.py` do not satisfy their docstrings and the unit tests fail. Fix the implementation so every test in `test_inventory.py` passes. Do not change the public function names or signatures.",
+  "entryFiles": ["inventory.py"],
+  "contextFiles": ["test_inventory.py"],
+  "testCommand": "python -m unittest discover -v",
+  "timeoutSeconds": 60,
+  "maxAttempts": 1
+}
